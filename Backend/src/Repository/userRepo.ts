@@ -2,7 +2,6 @@ import prismaClient from "../prismaClient";
 import { hashPassword, verifyPassword } from "../utils/hash";
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
-import { User } from "../generated/prisma";
 
 dotenv.config()
 export const userRepository = {
