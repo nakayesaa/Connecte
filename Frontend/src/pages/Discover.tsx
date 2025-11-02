@@ -3,16 +3,18 @@ import { Link} from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users,Plus, Search, Compass, User, LogOut } from "lucide-react";
+import { Users,Plus, Search, Compass, User, LogOut, Trophy } from "lucide-react";
 import CreatePost from "./CreatePost";
 import { useNavigate } from "react-router-dom";
 import { getUsername, userLogout } from "@/api/User";
 import { Post } from "@/types";
 import { getPost } from "@/api/Post";
+import { Medal, Code } from "lucide-react";
+import { renderPost } from "@/components/Post";
 
 const Discover = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState<Post[]>([]);
+  const [filter, setFilter] = useState<Post[]>([]); 
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState<string>("");
   const [posts, setPosts] = useState<Post[]>([]);
@@ -122,52 +124,7 @@ const Discover = () => {
           </div>
         </Tabs>
         <div className="space-y-6 mt-8">
-          {posts.length === 0 ? (
-            <p className="text-center text-muted-foreground">No posts found</p>
-          ) : (
-            filter.map((post) =>(
-              <div key={post.id} className="border rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-200 p-6">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <div className="text-sm text-blue-600 font-semibold capitalize">
-                      {post.type || "Others"}
-                    </div>
-                    <div className="text-xl font-bold mt-1">{post.title}</div>
-                    <div className="text-gray-600 mt-2 whitespace-pre-line">
-                      {post.content || "No description provided."}
-                    </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {post.role && (
-                        <span className="bg-blue-50 text-blue-700 px-3 py-1 text-xs rounded-full">
-                          {post.role}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white">
-                    Send a Request
-                  </Button>
-                </div>
-                <div className="flex items-center gap-3 mt-6">
-                  <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100 text-indigo-700 font-semibold">
-                    {post.PostOwner?.username
-                      ? post.PostOwner.username.charAt(0).toUpperCase() : "X"}
-                  </div>
-                  <div>
-                    <div className="font-medium">
-                      {post.PostOwner?.username || "Unknown User"}
-                    </div>
-                    <div className="text-xs text-muted-foreground">
-                      {post.PostOwner?.university || "No university info"}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {new Date(post.createdat).toLocaleDateString()}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))
-          )}
+          {renderPost(filter)}
         </div>
       </main>
     </div>
