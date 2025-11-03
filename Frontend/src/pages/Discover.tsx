@@ -3,13 +3,12 @@ import { Link} from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Users,Plus, Search, Compass, User, LogOut, Trophy } from "lucide-react";
+import { Users,Plus, Search, Compass, User, LogOut} from "lucide-react";
 import CreatePost from "./CreatePost";
 import { useNavigate } from "react-router-dom";
 import { getUsername, userLogout } from "@/api/User";
 import { Post } from "@/types";
 import { getPost } from "@/api/Post";
-import { Medal, Code } from "lucide-react";
 import { renderPost } from "@/components/Post";
 
 const Discover = () => {
@@ -123,9 +122,7 @@ const Discover = () => {
             </TabsList>
           </div>
         </Tabs>
-        <div className="space-y-6 mt-8">
-          {renderPost(filter)}
-        </div>
+        {renderPost(filter)}
       </main>
     </div>
   );
