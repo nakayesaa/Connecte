@@ -4,6 +4,7 @@ import Auth from "./pages/Auth";
 import Discover from "./pages/Discover";
 import Landing from "./pages/Landing";
 import Profile from "./pages/Profile";
+import SeePost from "./pages/Post";
 import { Toaster } from "./components/ui/toaster";
 const queryClient = new QueryClient();
 
@@ -15,6 +16,7 @@ const App = () => (
           <Route path="/discover" element={<Discover />} />
           <Route path="/" element={<Landing />} />
           <Route path="/Profile" element={<Profile />} />
+          <Route path="/Post" element={<SeePost/>} />
         </Routes>
         <Toaster></Toaster>
       </BrowserRouter>

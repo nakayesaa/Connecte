@@ -1,5 +1,6 @@
 import { Post } from "@/types"
-import { Medal, Code, Share, ThumbsUp, Bookmark } from "lucide-react"
+import { Medal, Code, Share, ThumbsUp, Bookmark, ArrowUpRight } from "lucide-react"
+import { Link } from "react-router-dom"
 import { Button } from "./ui/button"
 import { useState } from "react"
 
@@ -29,10 +30,13 @@ const renderPost = (posts : Post[])=>{
                     </div>
                     </div>
                     <div className="text-2xl font-bold ml-auto mr-auto">{post.title}</div>
+                    <div className="">
+                        <button className="border-2 py-1 px-5 rounded-lg hover:bg-gray-500">
+                            <ArrowUpRight className=""></ArrowUpRight>
+                        </button>
+                    </div>
                 </div>
-                <div className="text-gray-600 mt-2 whitespace-pre-line">
-                    {post.content || "No description provided."}
-                </div>
+                <div className="text-gray-600 mt-2 whitespace-pre-line">{post.content}</div>
                 <div className="mt-3 flex flex-wrap gap-2">
                     {post.role && post.role.split(",").filter(role => role.trim() != "").map((role)=>{
                         return (
