@@ -10,10 +10,16 @@ export const InterestRepo = {
     });
   },
   find: async function (userId: number, postId: string) {
+    if (!userId) throw new Error("userId is required");
+    if (!postId) throw new Error("postId is required");
     return await prismaClient.interest.findMany({
       where: {
-        userId,
-        postId,
+        user: {
+          id: userId,
+        },
+        post: {
+          id: postId,
+        },
       },
     });
   },
