@@ -1,35 +1,38 @@
 import { RequestHandler } from "express";
-import { userService, loginUser, getUsername, modifyUserData } from "../Services/userServices";
-import jwt, { JwtPayload } from "jsonwebtoken"
-import dotenv from "dotenv"
+import {
+  userService,
+  loginUser,
+  getUsername,
+  modifyUserData,
+} from "../Services/userServices";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import dotenv from "dotenv";
 import { AuthUser } from "../middleware/token";
 import prismaClient from "../prismaClient";
-import { exitCode } from "process";
 
-dotenv.config()
+dotenv.config();
 
-export const logoutUserCont: RequestHandler = async(req, res)=>{
+export const logoutUserCont: RequestHandler = async (req, res) => {
   try {
-    res.clearCookie("token",{
+    res.clearCookie("token", {
       httpOnly: true,
       secure: false,
-      sameSite: "lax"
+      sameSite: "lax",
     });
-
     return res.status(200).json({
       success: true,
-      message: "Successfully logged out"
+      message: "Successfully logged out",
     });
   } catch (error: any) {
     console.error("Logout error:", error.message);
     return res.status(500).json({
       success: false,
-      message: "Logout failed"
+      message: "Logout failed",
     });
   }
 };
 
-export const createUserCont: RequestHandler = async(req, res)=>{
+export const createUserCont: RequestHandler = async (req, res) => {
   const { username, password, email } = req.body;
   try {
     const newUser = await userService({ username, email, password });
@@ -40,20 +43,20 @@ export const createUserCont: RequestHandler = async(req, res)=>{
     });
   } catch (error: any) {
     console.error("Error in createUser:", error.message);
-    if(error.code === "idk bruh"){
+    if (error.code === "idk bruh") {
       return res.status(409).json({
         success: false,
-        message: "Email already exists"
+        message: "Email already exists",
       });
     }
     return res.status(500).json({
       success: false,
-      message: error.message || "Failed to create user"
+      message: error.message || "Failed to create user",
     });
   }
 };
 
-export const loginUserCont: RequestHandler = async(req, res)=>{
+export const loginUserCont: RequestHandler = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await loginUser({ email, password });
@@ -61,7 +64,7 @@ export const loginUserCont: RequestHandler = async(req, res)=>{
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
-      sameSite: "lax"
+      sameSite: "lax",
     });
 
     return res.status(200).json({
@@ -71,8 +74,14 @@ export const loginUserCont: RequestHandler = async(req, res)=>{
   } catch (error: any) {
     console.error("Error in login:", error.message);
 
-    if(error.message === "Email didnt exist") return res.status(400).json({ success: false, message: "Email not found" });
-    if(error.message === "invalidPassword") return res.status(401).json({ success: false, message: "Invalid password" });
+    if (error.message === "Email didnt exist")
+      return res
+        .status(400)
+        .json({ success: false, message: "Email not found" });
+    if (error.message === "invalidPassword")
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid password" });
 
     return res.status(500).json({
       success: false,
@@ -81,19 +90,27 @@ export const loginUserCont: RequestHandler = async(req, res)=>{
   }
 };
 
-export const getUname: RequestHandler = async(req, res)=>{
+export const getUname: RequestHandler = async (req, res) => {
   try {
     const token = req.cookies.token;
-    if(!token) return res.status(401).json({ success: false, message: "No token provided" });
+    if (!token)
+      return res
+        .status(401)
+        .json({ success: false, message: "No token provided" });
 
-    const decoded = jwt.verify(token, process.env.SECRET_TOKEN as string) as jwt.JwtPayload;
+    const decoded = jwt.verify(
+      token,
+      process.env.SECRET_TOKEN as string,
+    ) as jwt.JwtPayload;
     const email = decoded?.email;
 
-    if(!email) return res.status(400).json({ success: false, message: "Invalid token payload" });
+    if (!email)
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid token payload" });
 
     const username = await getUsername(email);
     return res.status(200).json({ success: true, data: username });
-
   } catch (error: any) {
     console.error("Error in getUname:", error.message);
     return res.status(500).json({
@@ -103,10 +120,11 @@ export const getUname: RequestHandler = async(req, res)=>{
   }
 };
 
-export const getData = async(req: AuthUser, res: any)=>{
+export const getData = async (req: AuthUser, res: any) => {
   try {
-    const userId = req.numberId;
-    if (!userId) return res.status(401).json({ success: false, message: "Unauthorized" });
+    const userId = req.userId;
+    if (!userId)
+      return res.status(401).json({ success: false, message: "Unauthorized" });
 
     const userData = await prismaClient.user.findUnique({
       where: { id: userId },
@@ -117,35 +135,38 @@ export const getData = async(req: AuthUser, res: any)=>{
         major: true,
         description: true,
         portfolo: true,
-        Posts: true
+        Posts: true,
       },
     });
 
-    if (!userData) return res.status(404).json({ success: false, message: "User not found" });
+    if (!userData)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     return res.status(200).json({ success: true, data: userData });
   } catch (error: any) {
     console.error("Error in getData:", error.message);
     return res.status(500).json({
       success: false,
-      message: "Failed to fetch user data"
+      message: "Failed to fetch user data",
     });
   }
 };
 
-export const updateUserData: RequestHandler = async(req: AuthUser, res)=>{
+export const updateUserData: RequestHandler = async (req, res) => {
   try {
-    const userId = req.numberId as number;
+    const userId = (req as AuthUser).userId;
     const update = await modifyUserData(userId, req.body);
 
     res.status(200).json({
       success: true,
-      data: update
+      data: update,
     });
   } catch (error: any) {
     console.error("Error in updateUserData:", error.message);
     res.status(500).json({
       success: false,
-      message: error.message || "Failed to update user data"
+      message: error.message || "Failed to update user data",
     });
   }
 };

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { X } from "lucide-react";
 import { createPost } from "@/api/Post";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { CreatePostDTO } from "@/types";
 
 const useCreatePost = ()=>{
