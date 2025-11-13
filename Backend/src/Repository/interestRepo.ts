@@ -12,13 +12,11 @@ export const InterestRepo = {
   find: async function (userId: number, postId: string) {
     if (!userId) throw new Error("userId is required");
     if (!postId) throw new Error("postId is required");
-    return await prismaClient.interest.findMany({
+    return await prismaClient.interest.findUnique({
       where: {
-        user: {
-          id: userId,
-        },
-        post: {
-          id: postId,
+        userId_postId: {
+          userId,
+          postId,
         },
       },
     });
@@ -26,17 +24,17 @@ export const InterestRepo = {
   findByUser: async (userId: number) => {
     return await prismaClient.interest.findMany({
       where: {
-        userId: userId,
+        userId,
       },
       include: {
         post: true,
       },
     });
   },
-  findByPost: async (PostId: string) => {
+  findByPost: async (postId: string) => {
     return await prismaClient.interest.findMany({
       where: {
-        postId: PostId,
+        postId,
       },
       include: {
         user: true,
