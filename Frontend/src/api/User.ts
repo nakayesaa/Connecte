@@ -3,12 +3,12 @@ import { loginDTO, signupDTO } from "@/types";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-export const urlSignup = `${BASE_URL}/auth/signup`;
-export const urlLogin = `${BASE_URL}/auth/login`;
-export const urlGetUserData = `${BASE_URL}/auth/getUsername`;
-export const urlLogout = `${BASE_URL}/auth/logout`;
-export const urlGetData = `${BASE_URL}/auth/getData`;
-export const urlUpdate = `${BASE_URL}/auth/Update`;
+export const urlSignup = `${BASE_URL}/user/signup`;
+export const urlLogin = `${BASE_URL}/user/login`;
+export const urlGetUserData = `${BASE_URL}/user/getUserData`;
+export const urlLogout = `${BASE_URL}/user/logout`;
+export const urlGetData = `${BASE_URL}/user/getData`;
+export const urlUpdate = `${BASE_URL}/user/Update`;
 
 export const createUser = async (Data: signupDTO) => {
   return apiRequest(urlSignup, {
@@ -53,6 +53,7 @@ export const getData = async () => {
     headers: {
       "content-type": "application/json",
     },
+    credentials: "include",
   });
 };
 

@@ -34,8 +34,8 @@ export const PostCard = ({
       });
       setHasInterested(true);
     },
-    onError: () => {
-      console.log("Failed Adding Interest");
+    onError: (data) => {
+      console.log(data);
       toast({
         title: "Failed to send interest",
         description: "Please try again later.",

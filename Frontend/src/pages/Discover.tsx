@@ -94,7 +94,7 @@ const Discover = () => {
           </div>
           <div className="flex items-center gap-2">
             <span className="font-semibold">
-              {user.username ? user.username : "Loading..."}
+              {user ? user.username : "Loading..."}
             </span>
             <LogOut className="h-5 w-5"></LogOut>
             <button
@@ -147,7 +147,7 @@ const Discover = () => {
             </TabsList>
           </div>
         </Tabs>
-        <RenderPosts posts={posts} userId={user.id} />
+        <RenderPosts posts={posts} userId={user ? user.id : 0} />
       </main>
     </div>
   );
