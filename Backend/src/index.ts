@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
     message: "gotta get rich",
   });
 });
-app.use("/auth", userRoutes);
+app.use("/user", userRoutes);
 app.use("/api", postRoutes);
 app.use("/", interestRoutes);
 

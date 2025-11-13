@@ -2,7 +2,7 @@ import { RequestHandler } from "express";
 import {
   userService,
   loginUser,
-  getUsername,
+  getUserDataService,
   modifyUserData,
 } from "../Services/userServices";
 import jwt, { JwtPayload } from "jsonwebtoken";
@@ -90,7 +90,7 @@ export const loginUserCont: RequestHandler = async (req, res) => {
   }
 };
 
-export const getUname: RequestHandler = async (req, res) => {
+export const getUserDataCont: RequestHandler = async (req, res) => {
   try {
     const token = req.cookies.token;
     if (!token)
@@ -109,8 +109,8 @@ export const getUname: RequestHandler = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Invalid token payload" });
 
-    const username = await getUsername(email);
-    return res.status(200).json({ success: true, data: username });
+    const usernameId = await getUserDataService(email);
+    return res.status(200).json({ success: true, data: usernameId });
   } catch (error: any) {
     console.error("Error in getUname:", error.message);
     return res.status(500).json({

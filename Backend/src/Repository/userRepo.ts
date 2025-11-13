@@ -57,14 +57,17 @@ export const userRepository = {
       token,
     };
   },
-  getUsername: async (email: string) => {
+  getUserData: async (email: string) => {
     const user = await prismaClient.user.findUnique({
       where: {
         email,
       },
     });
     if (!user) throw new Error("Email didnt exist");
-    return user.username;
+    return {
+      username: user.username,
+      userId: user.id,
+    };
   },
   modifyData: async (
     userId: number,
