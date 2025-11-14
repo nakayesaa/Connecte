@@ -63,8 +63,8 @@ export const loginUserCont: RequestHandler = async (req, res) => {
     const token = user.token;
     res.cookie("token", token, {
       httpOnly: true,
-      secure: false,
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
     });
 
     return res.status(200).json({
