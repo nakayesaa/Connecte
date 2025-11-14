@@ -7,9 +7,13 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(cookieParser());
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://connectee-rust.vercel.app",
+];
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
