@@ -162,12 +162,15 @@ const Profile = () => {
               data.Posts.map((post: any) => (
                 <div
                   key={post.id}
-                  className="border rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-200 p-6"
+                  className="relative border rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-200 p-6"
                 >
-                  <div className="absolute top-3 right-3">
+                  <div className="absolute top-3 right-3 mt-2">
                     <RecruitDropdownMenu
                       postId={post.id}
-                      interestedUsers={post.interested || []}
+                      interestedUsers={post.Interests.map((user: any) => ({
+                        username: user.user.username,
+                        Profile: user.user.profile ?? false,
+                      }))}
                     />
                   </div>
                   <div className="flex justify-between items-start">

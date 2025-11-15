@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,7 +12,7 @@ import {
 
 interface RecruitMenuProps {
   postId: number;
-  interestedUsers: { username: string }[];
+  interestedUsers: { username: string; Profile: boolean }[];
 }
 
 export function RecruitDropdownMenu({
@@ -20,22 +22,20 @@ export function RecruitDropdownMenu({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">Recruit ({interestedUsers.length})</Button>
+        <Button variant="outline">Requests ({interestedUsers.length})</Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-56" align="end">
+      <DropdownMenuContent className="w-56 z-50" align="end">
         <DropdownMenuLabel>Who Interested</DropdownMenuLabel>
         <DropdownMenuSeparator />
-
-        {interestedUsers.length === 0 ? (
-          <DropdownMenuItem disabled>
-            No one showing interest right now
-          </DropdownMenuItem>
-        ) : (
-          interestedUsers.map((user, idx) => (
-            <DropdownMenuItem key={idx}>{user.username}</DropdownMenuItem>
-          ))
-        )}
+        {interestedUsers.map((user, idx) => (
+          <div key={idx}>
+            <DropdownMenuItem>
+              {user.Profile ? user.username[0].toUpperCase() : user.username[0]}
+            </DropdownMenuItem>
+            <DropdownMenuItem>{user.username}</DropdownMenuItem>
+          </div>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
