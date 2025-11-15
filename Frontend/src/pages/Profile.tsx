@@ -22,8 +22,12 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const userData = await getData();
-      setData(userData.data);
+      try {
+        const userData = await getData();
+        setData(userData.data);
+      } catch {
+        console.log("could not get userData");
+      }
     };
     fetchData();
   }, []);
