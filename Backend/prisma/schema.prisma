@@ -23,6 +23,7 @@ model User{
   major String?
   description String?
   portfolo String?
+  profile String?
   Posts Post[]
   interests Interest[]
 }

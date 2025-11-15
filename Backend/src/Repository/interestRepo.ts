@@ -37,7 +37,12 @@ export const InterestRepo = {
         postId,
       },
       include: {
-        user: true,
+        user: {
+          select: {
+            username: true,
+            id: true,
+          },
+        },
       },
     });
   },

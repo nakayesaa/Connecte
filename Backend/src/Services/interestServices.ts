@@ -9,3 +9,7 @@ export const createInterest = async (userId: number, postId: string) => {
 
   return await InterestRepo.create(userId, postId);
 };
+
+export const getUser = async (postId: string) => {
+  return await InterestRepo.findByPost(postId);
+};
