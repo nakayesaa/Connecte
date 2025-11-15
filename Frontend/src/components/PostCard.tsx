@@ -1,12 +1,5 @@
 import { Post } from "@/types";
-import {
-  Medal,
-  Share,
-  ThumbsUp,
-  Bookmark,
-  ArrowUpRight,
-  CheckCircle2,
-} from "lucide-react";
+import { Medal, Share, ThumbsUp, Bookmark, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import { addInterest } from "@/api/Interest";
 import { useMutation } from "@tanstack/react-query";
@@ -72,11 +65,7 @@ export const PostCard = ({
             <div className="text-2xl font-bold ml-auto mr-auto">
               {post.title}
             </div>
-            <div>
-              <button className="border-2 py-1 px-5 rounded-lg hover:bg-gray-500">
-                <ArrowUpRight />
-              </button>
-            </div>
+            <div></div>
           </div>
 
           <div className="text-gray-600 mt-2 whitespace-pre-line">

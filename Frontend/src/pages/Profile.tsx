@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { getData, update } from "@/api/User";
+import { RecruitDropdownMenu } from "@/components/DropdownMenu";
+
 const Profile = () => {
   const [change, setChange] = useState(false);
   const [data, setData] = useState<any>({
@@ -162,6 +164,12 @@ const Profile = () => {
                   key={post.id}
                   className="border rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-200 p-6"
                 >
+                  <div className="absolute top-3 right-3">
+                    <RecruitDropdownMenu
+                      postId={post.id}
+                      interestedUsers={post.interested || []}
+                    />
+                  </div>
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="text-sm text-blue-600 font-semibold capitalize">
