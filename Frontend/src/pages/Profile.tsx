@@ -165,13 +165,7 @@ const Profile = () => {
                   className="relative border rounded-xl bg-white shadow-sm hover:shadow-md transition-all duration-200 p-6"
                 >
                   <div className="absolute top-3 right-3 mt-2">
-                    <RecruitDropdownMenu
-                      postId={post.id}
-                      interestedUsers={post.Interests.map((user: any) => ({
-                        username: user.user.username,
-                        Profile: user.user.profile ?? false,
-                      }))}
-                    />
+                    <RecruitDropdownMenu postId={post.id} />
                   </div>
                   <div className="flex justify-between items-start">
                     <div>
