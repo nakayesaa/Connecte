@@ -4,15 +4,14 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-generator client {
-  provider = "prisma-client-js"
-}
+  generator client {
+    provider = "prisma-client-js"
+  }
 
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
-}
+  datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+  }
 
 model User{
   id Int @id @default(autoincrement())
@@ -26,6 +25,8 @@ model User{
   profile String?
   Posts Post[]
   interests Interest[]
+  likePosts LikePost[]
+  CommentPosts CommentPost[]
 }
 
 model Post{
@@ -35,9 +36,34 @@ model Post{
   content String @db.Text
   role String
   type String
+  like Int
+  share Int
+  save Int
   postOwnerId Int
   PostOwner User @relation(fields: [postOwnerId], references: [id])
   Interests Interest[]
+  likePosts LikePost[]
+  CommentPosts CommentPost[]
+}
+
+model LikePost{
+  postId String
+  userId Int
+  createdAt DateTime @default(now())
+  user User @relation(fields:[userId], references : [id])
+  post Post @relation(fields:[postId], references : [id])
+  @@id([userId,postId])
+}
+
+model CommentPost{
+  id String @id @default(uuid())
+  postId String
+  userId Int
+  createdAt DateTime @default(now())
+  message String
+
+  user User @relation(fields:[userId], references:[id])
+  post Post @relation(fields:[postId], references:[id])
 }
 
 model Interest{
