@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
   });
 });
 app.use("/user", userRoutes);
-app.use("/api", postRoutes);
+app.use("/post", postRoutes);
 app.use("/", interestRoutes);
 
 app.listen(PORT, () => {

@@ -48,9 +48,7 @@ export function RecruitDropdownMenu({ postId }: RecruitMenuProps) {
   return (
     <DropdownMenu onOpenChange={(isOpen) => isOpen && fetchUsers()}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
-          {loading ? "Loading..." : `Requests (${interestedUsers.length})`}
-        </Button>
+        <Button variant="outline">{loading ? "Loading..." : `Requests`}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 z-50" align="end">
         <DropdownMenuLabel>Who Interested</DropdownMenuLabel>

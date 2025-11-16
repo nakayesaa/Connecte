@@ -1,5 +1,11 @@
 import { Post } from "@/types";
-import { Medal, Share, ThumbsUp, Bookmark, CheckCircle2 } from "lucide-react";
+import {
+  Medal,
+  ThumbsUp,
+  Bookmark,
+  CheckCircle2,
+  MessageSquareText,
+} from "lucide-react";
 import { useState } from "react";
 import { addInterest } from "@/api/Interest";
 import { useMutation } from "@tanstack/react-query";
@@ -111,10 +117,10 @@ export const PostCard = ({
             <ThumbsUp className="text-sm" />
           </button>
           <button>
-            <Bookmark />
+            <MessageSquareText />
           </button>
           <button>
-            <Share />
+            <Bookmark />
           </button>
           {hasInterested ? (
             <div className="flex items-center gap-2 text-green-600 font-semibold">

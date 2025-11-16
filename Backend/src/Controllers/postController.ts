@@ -1,7 +1,11 @@
 import { Request, RequestHandler, Response } from "express";
-import { postService } from "../Services/postService";
+import { addCommentToPost, postService } from "../Services/postService";
 import { AuthUser } from "../middleware/token";
 import prismaClient from "../prismaClient";
+import Jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const postController: RequestHandler = async (req, res) => {
   const { title, content, role, type } = req.body;
@@ -41,5 +45,32 @@ export const getPost = async (req: Request, res: Response) => {
       success: false,
       message: "Failed to fetch",
     });
+  }
+};
+
+export const createPostComment: RequestHandler = async (req, res) => {
+  try {
+    const { postId, message } = req.body;
+    const token = req.cookies.token;
+    if (!token)
+      return res.status(200).json({
+        message: "User not authorize, no token provided",
+      });
+    const decode = Jwt.verify(token, process.env.SECRET_TOKEN as string) as {
+      id: number;
+    };
+    const userId = decode.id;
+    await addCommentToPost({
+      userId,
+      postId,
+      message,
+    });
+    return res.status(200).json({
+      success: true,
+      message: "comment created",
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 };
