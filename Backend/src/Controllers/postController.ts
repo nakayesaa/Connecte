@@ -1,5 +1,9 @@
 import { Request, RequestHandler, Response } from "express";
-import { addCommentToPost, postService } from "../Services/postService";
+import {
+  addCommentToPost,
+  addLikeToPost,
+  postService,
+} from "../Services/postService";
 import { AuthUser } from "../middleware/token";
 import prismaClient from "../prismaClient";
 import Jwt from "jsonwebtoken";
@@ -68,6 +72,32 @@ export const createPostComment: RequestHandler = async (req, res) => {
     return res.status(200).json({
       success: true,
       comment: commentData,
+    });
+  } catch (err: any) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const createPostLike: RequestHandler = async (req, res) => {
+  try {
+    const { postId } = req.body;
+    const token = req.cookies.token;
+    if (!token)
+      return res.status(200).json({
+        message: "User not authorize, no token provided",
+      });
+    const decode = Jwt.verify(token, process.env.SECRET_TOKEN as string) as {
+      id: number;
+    };
+    const userId = decode.id;
+    const LikeData = await addLikeToPost({
+      userId,
+      postId,
+    });
+    return res.status(200).json({
+      success: true,
+      comment: LikeData,
     });
   } catch (err: any) {
     console.error(err);
