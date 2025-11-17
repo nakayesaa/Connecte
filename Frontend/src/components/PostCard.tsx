@@ -11,6 +11,7 @@ import { addInterest } from "@/api/Interest";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { FaSpinner } from "react-icons/fa";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const PostCard = ({
   post,
@@ -21,6 +22,9 @@ export const PostCard = ({
 }) => {
   const [hover, setHover] = useState<string | null>(null);
   const [hasInterested, setHasInterested] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const sendInterest = useMutation({
     mutationFn: addInterest,
@@ -43,16 +47,31 @@ export const PostCard = ({
     },
   });
 
-  const handleInterest = async () => {
+  const handlePostClick = () => {
+    navigate(`post/${post.id}`, {
+      state: {
+        background: location,
+      },
+    });
+  };
+
+  const handleInterest = async (e: React.MouseEvent) => {
+    e.stopPropagation();
     sendInterest.mutate({
       userId: userId,
       postId: post.id,
     });
   };
 
+  const handleButtonClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   const isSending = sendInterest.isPending;
+
   return (
     <div
+      onClick={handlePostClick}
       key={post.id}
       onMouseEnter={() => setHover(post.id)}
       onMouseLeave={() => setHover(null)}
@@ -94,7 +113,6 @@ export const PostCard = ({
           </div>
         </div>
       </div>
-
       <div className="flex items-center justify-between mt-6">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100 text-indigo-700 font-semibold">
@@ -113,13 +131,13 @@ export const PostCard = ({
         </div>
 
         <div className="flex items-center gap-8">
-          <button className="text-sm">
+          <button className="text-sm" onClick={handleButtonClick}>
             <ThumbsUp className="text-sm" />
           </button>
-          <button>
+          <button onClick={handleButtonClick}>
             <MessageSquareText />
           </button>
-          <button>
+          <button onClick={handleButtonClick}>
             <Bookmark />
           </button>
           {hasInterested ? (

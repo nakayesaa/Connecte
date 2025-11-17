@@ -1,6 +1,8 @@
 import { Posts } from "../Repository/postRepo";
 import { commentPosts } from "../Repository/commentRepo";
 import { createPostDTO } from "../types";
+import { domainToASCII } from "url";
+import { likePost } from "../Repository/likeRepo";
 
 export const postService = async (Data: createPostDTO, userId: number) => {
   const newPost = await Posts.createPost(
@@ -23,4 +25,13 @@ export const addCommentToPost = async (Data: {
   if (!Data.userId || !Data.postId)
     throw new Error("userId or postId is required");
   return commentPosts.createComment(Data);
+};
+
+export const addLikeToPost = async (Data: {
+  userId: number;
+  postId: string;
+}) => {
+  if (!Data.userId || !Data.postId)
+    throw new Error("PostId and UserId are required");
+  return likePost.createLike(Data);
 };

@@ -57,7 +57,7 @@ export const createPostComment: RequestHandler = async (req, res) => {
     const { postId, message } = req.body;
     const token = req.cookies.token;
     if (!token)
-      return res.status(200).json({
+      return res.status(401).json({
         message: "User not authorize, no token provided",
       });
     const decode = Jwt.verify(token, process.env.SECRET_TOKEN as string) as {
@@ -84,7 +84,7 @@ export const createPostLike: RequestHandler = async (req, res) => {
     const { postId } = req.body;
     const token = req.cookies.token;
     if (!token)
-      return res.status(200).json({
+      return res.status(401).json({
         message: "User not authorize, no token provided",
       });
     const decode = Jwt.verify(token, process.env.SECRET_TOKEN as string) as {
@@ -102,5 +102,36 @@ export const createPostLike: RequestHandler = async (req, res) => {
   } catch (err: any) {
     console.error(err);
     return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const getLikeData: RequestHandler = async (req, res) => {
+  try {
+    const { postId } = req.body;
+    const likes = await prismaClient.likePost.findMany({
+      where: { postId },
+      include: {
+        user: {
+          select: {
+            username: true,
+            profile: true,
+          },
+        },
+      },
+    });
+    const count = await prismaClient.likePost.count({
+      where: { postId },
+    });
+    return res.status(200).json({
+      success: true,
+      likes,
+      count,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
