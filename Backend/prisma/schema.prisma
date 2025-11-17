@@ -36,9 +36,6 @@ model Post{
   content String @db.Text
   role String
   type String
-  like Int
-  share Int
-  save Int
   postOwnerId Int
   PostOwner User @relation(fields: [postOwnerId], references: [id])
   Interests Interest[]

@@ -60,14 +60,14 @@ export const createPostComment: RequestHandler = async (req, res) => {
       id: number;
     };
     const userId = decode.id;
-    await addCommentToPost({
+    const commentData = await addCommentToPost({
       userId,
       postId,
       message,
     });
     return res.status(200).json({
       success: true,
-      message: "comment created",
+      comment: commentData,
     });
   } catch (err: any) {
     console.error(err);
