@@ -62,7 +62,7 @@ const ParticleTextThree: React.FC = () => {
         const idx = (y * textCanvas.width + x) * 4;
         if (imageData[idx + 3] > 128) {
           const px = x - textCanvas.width / 2;
-          const py = textCanvas.height / 2 - y;
+          const py = textCanvas.height / 2 - y + 60;
           targets.push(px * 0.06, py * 0.06, (Math.random() - 0.5) * 1);
         }
       }

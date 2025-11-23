@@ -90,12 +90,6 @@ const Auth = () => {
   };
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-700 to-slate-950 flex flex-col items-center justify-center p-2">
-      <div className="inline-flex gap-2 px-4 py-4 rounded-full bg-primary/10 border border-primary/20 items-center">
-        <Users className="h-4 w-4 text-primary" />
-        <span className="text-sm font-medium text-primary">
-          Where Engineers Gather
-        </span>
-      </div>
       <div className="w-full max-w-lg">
         <div className="flex flex-col items-center gap-4 mb-8">
           <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-primary">
