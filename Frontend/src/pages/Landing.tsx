@@ -2,17 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Users } from "lucide-react";
 import RoamingCube from "@/components/RoamingCube";
-import ParticleTextThree from "@/components/dotHandshake";
+import ParticleTextThree from "@/components/textDrop";
 
 const Landing = () => {
   return (
     <div className="relative min-h-screen overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-800 via-slate-700 to-slate-950 z-0" />
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute inset-0 z-0">
-          <RoamingCube />
-        </div>
-        <div className="absolute inset-0 z-10 opacity-70">
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-slate-800 to-black" />
+        <div className="absolute inset-0 z-20 opacity-70">
           <ParticleTextThree />
         </div>
       </div>

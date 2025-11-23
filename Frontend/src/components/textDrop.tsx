@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo } from "react";
+import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 
 type Particle = {
@@ -30,12 +30,9 @@ const ParticleTextThree: React.FC = () => {
     mount.appendChild(renderer.domElement);
 
     const TEXT = "Connecte";
-    const FONT_SIZE = 160;
     const SAMPLING = 3;
     const PARTICLE_SIZE = 0.12;
     const SPAWN_HEIGHT = 30;
-    const HOLD_TIME = 1200;
-    const RETURN_TIME = 1000;
 
     const textCanvas = document.createElement("canvas");
     const ctx = textCanvas.getContext("2d");
@@ -93,9 +90,10 @@ const ParticleTextThree: React.FC = () => {
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     const material = new THREE.PointsMaterial({
-      color: 0xbae6fd,
+      color: 0x7dd3fc,
       size: PARTICLE_SIZE,
       transparent: true,
+      opacity: 0.9,
     });
 
     const points = new THREE.Points(geometry, material);
@@ -105,7 +103,24 @@ const ParticleTextThree: React.FC = () => {
     let phase: "falling" | "formed" = "falling";
     let formedAt = 0;
 
-    function animate() {
+    const mouse = new THREE.Vector2(-1000, -1000);
+    mount.addEventListener("mousemove", (e) => {
+      const rect = mount.getBoundingClientRect();
+      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    });
+
+    const raycaster = new THREE.Raycaster();
+
+    let lastTime = 0;
+    const FPS = 30;
+    const INTERVAL = 1000 / FPS;
+
+    function animate(time: number) {
+      requestAnimationFrame(animate);
+      if (time - lastTime < INTERVAL) return;
+      lastTime = time;
+
       const dt = clock.getDelta();
       const pos = geometry.getAttribute("position") as THREE.BufferAttribute;
 
@@ -124,17 +139,43 @@ const ParticleTextThree: React.FC = () => {
 
           if (Math.abs(dx) < 0.2 && Math.abs(dy) < 0.2) settled++;
         }
-        pos.needsUpdate = true;
         if (settled > particleCount * 0.8) {
           phase = "formed";
           formedAt = performance.now();
         }
       }
+      if (phase === "formed") {
+        const vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+        vector.unproject(camera);
 
+        for (let i = 0; i < particleCount; i++) {
+          const ix = i * 3;
+          const px = pos.array[ix];
+          const py = pos.array[ix + 1];
+          const pz = pos.array[ix + 2];
+
+          const dx = px - vector.x;
+          const dy = py - vector.y;
+          const dz = pz - vector.z;
+          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+          const radius = 3;
+          if (dist < radius && dist > 0.001) {
+            const force = (radius - dist) * 0.2;
+            pos.array[ix] += (dx / dist) * force;
+            pos.array[ix + 1] += (dy / dist) * force;
+            pos.array[ix + 2] += (dz / dist) * force;
+          }
+          pos.array[ix] += (targetsArr[ix] - pos.array[ix]) * 0.02;
+          pos.array[ix + 1] += (targetsArr[ix + 1] - pos.array[ix + 1]) * 0.02;
+          pos.array[ix + 2] += (targetsArr[ix + 2] - pos.array[ix + 2]) * 0.02;
+        }
+      }
+
+      pos.needsUpdate = true;
       renderer.render(scene, camera);
-      requestAnimationFrame(animate);
     }
-    animate();
+    animate(0);
 
     function resize() {
       renderer.setSize(mount.clientWidth, mount.clientHeight);
