@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import SeePost from "./pages/Post";
 import Test from "./pages/Test";
 import { Toaster } from "./components/ui/toaster";
+import Authentication from "./pages/Authentication";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -20,6 +21,7 @@ const App = () => (
         <Route path="/Post" element={<SeePost />} />
         <Route path="/Post" element={<SeePost />} />
         <Route path="/Test" element={<Test />} />
+        <Route path="/Authentication" element={<Authentication />} />
       </Routes>
       <Toaster></Toaster>
     </BrowserRouter>
