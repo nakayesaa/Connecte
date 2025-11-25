@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaGithub, FaGoogle, FaEnvelope } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Authentication = () => {
   const [active, setActive] = useState("signin");
@@ -36,7 +37,12 @@ const Authentication = () => {
           </div>
           {active === "signin" && (
             <div className="flex flex-col gap-3 w-full mt-10">
-              <button className="w-full py-3 bg-gradient-to-r from-white/40 via-white/10 to-white/5 rounded-full border text-white hover:bg-white/10 transition font-medium">
+              <button
+                onClick={() => {
+                  window.location.href = "http://localhost:3001/auth/google";
+                }}
+                className="w-full py-3 bg-gradient-to-r from-white/40 via-white/10 to-white/5 rounded-full border text-white hover:bg-white/10 transition font-medium"
+              >
                 Sign in with Google
               </button>
               <button className="w-full py-3 bg-gradient-to-r from-white/30 via-white/20 to-white/5 rounded-full border text-white hover:bg-white/10 transition font-medium">
