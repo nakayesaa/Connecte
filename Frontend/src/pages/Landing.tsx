@@ -37,7 +37,7 @@ const Landing = () => {
             ${showContent ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-4 scale-95"}
           `}
         >
-          <Link to="/auth">
+          <Link to="/authentication">
             <Button
               size="lg"
               className="
