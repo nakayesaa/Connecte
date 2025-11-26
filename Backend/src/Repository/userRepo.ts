@@ -29,6 +29,28 @@ export const userRepository = {
       });
     }
   },
+  handleGoogleAuth: async function (username: string, email: string) {
+    try {
+      const isEmailExist = await this.findEmail(email);
+      if (!isEmailExist) {
+        console.log("Creating new user:", email);
+        const newUser = await prismaClient.user.create({
+          data: {
+            username,
+            email,
+            password: "",
+          },
+        });
+        return newUser;
+      }
+
+      console.log("User already exists:", email);
+      return isEmailExist;
+    } catch (error) {
+      console.error("Error in handleGoogleAuth:", error);
+      throw error;
+    }
+  },
   verifyUser: async function (Data: { email: string; password: string }) {
     const emailExist = await this.findEmail(Data.email);
     console.log(Data.email, emailExist);

@@ -2,6 +2,7 @@ import express from "express";
 import userRoutes from "./routes/userRoutes";
 import postRoutes from "./routes/postRoutes";
 import interestRoutes from "./routes/interestRoutes";
+import googleAuth from "./routes/googleAuth";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -29,6 +30,7 @@ app.get("/", (req, res) => {
 app.use("/user", userRoutes);
 app.use("/post", postRoutes);
 app.use("/", interestRoutes);
+app.use("/", googleAuth);
 
 app.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);

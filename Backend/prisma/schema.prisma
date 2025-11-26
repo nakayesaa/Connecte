@@ -14,9 +14,11 @@
 
 model User{
   id Int @id @default(autoincrement())
-  username String @unique
   email String @unique
-  password String
+  username String? @unique
+  password String?
+  googleId String?
+  githubId String?
   university String?
   major String?
   description String?
