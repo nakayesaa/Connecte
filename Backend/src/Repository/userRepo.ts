@@ -29,7 +29,7 @@ export const userRepository = {
       });
     }
   },
-  handleGoogleAuth: async function (username: string, email: string) {
+  handleProviderAuth: async function (username: string, email: string) {
     try {
       const isEmailExist = await this.findEmail(email);
       if (!isEmailExist) {

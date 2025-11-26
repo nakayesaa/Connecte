@@ -48,7 +48,12 @@ const Authentication = () => {
               <button className="w-full py-3 bg-gradient-to-r from-white/30 via-white/20 to-white/5 rounded-full border text-white hover:bg-white/10 transition font-medium">
                 Sign in with Email
               </button>
-              <button className="w-full py-3 bg-gradient-to-r from-white/10 via-white/15 to-white/25 rounded-full border text-white hover:bg-white/10 transition font-medium">
+              <button
+                onClick={() => {
+                  window.location.href = "http://localhost:3001/auth/github";
+                }}
+                className="w-full py-3 bg-gradient-to-r from-white/10 via-white/15 to-white/25 rounded-full border text-white hover:bg-white/10 transition font-medium"
+              >
                 Sign in with Github
               </button>
             </div>
