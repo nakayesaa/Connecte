@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 import express, { RequestHandler } from "express";
 import { userRepository } from "../Repository/userRepo";
 import jwt from "jsonwebtoken";
-import { create } from "node:domain";
 
 const router = express.Router();
 dotenv.config();
@@ -36,6 +35,7 @@ const githubAuthentication: RequestHandler = async (req, res) => {
     },
   });
   const Data = await userData.json();
+
   const createUser = await userRepository.handleProviderAuth(
     Data.login as string,
     Data.email as string,
@@ -71,3 +71,5 @@ const redirect: RequestHandler = (req, res, next) => {
 
 router.get("/auth/github", redirect);
 router.get("/auth/github/callback", githubAuthentication);
+
+export default router;

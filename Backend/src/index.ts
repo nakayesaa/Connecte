@@ -3,6 +3,7 @@ import userRoutes from "./routes/userRoutes";
 import postRoutes from "./routes/postRoutes";
 import interestRoutes from "./routes/interestRoutes";
 import googleAuth from "./routes/googleAuth";
+import githubAuth from "./routes/githubAuth";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -31,6 +32,7 @@ app.use("/user", userRoutes);
 app.use("/post", postRoutes);
 app.use("/", interestRoutes);
 app.use("/", googleAuth);
+app.use("/", githubAuth);
 
 app.listen(PORT, () => {
   console.log(`Listening on ${PORT}`);

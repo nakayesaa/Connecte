@@ -45,7 +45,7 @@ const receiveCode: RequestHandler = async (req, res) => {
       },
     });
     const data = await userData.json();
-    const createUser = await userRepository.handleGoogleAuth(
+    const createUser = await userRepository.handleProviderAuth(
       data.name,
       data.email,
     );
@@ -86,7 +86,6 @@ const redirect: RequestHandler = async (req, res) => {
     access_type: "offline",
     prompt: "consent",
   });
-
   const url = `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`;
   res.redirect(url);
 };
