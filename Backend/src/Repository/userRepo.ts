@@ -12,6 +12,7 @@ export const userRepository = {
       },
     });
   },
+
   createUser: async function (Data: {
     username: string;
     email: string;

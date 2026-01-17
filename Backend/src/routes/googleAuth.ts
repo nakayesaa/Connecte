@@ -3,6 +3,7 @@ const router = express.Router();
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { userRepository } from "../Repository/userRepo";
+import { urlToHttpOptions } from "url";
 
 dotenv.config();
 
@@ -37,7 +38,7 @@ const receiveCode: RequestHandler = async (req, res) => {
         .status(400)
         .json({ error: "Failed to exchange code for token" });
     }
-
+    
     const tokens = await getTokenResponse.json();
     const userData = await fetch(userInfoUrl, {
       headers: {
