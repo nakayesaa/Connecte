@@ -5,6 +5,8 @@ import {
   Bookmark,
   CheckCircle2,
   MessageSquareText,
+  Share2,
+  Calendar,
 } from "lucide-react";
 import { useState } from "react";
 import { addInterest } from "@/api/Interest";
@@ -20,25 +22,21 @@ export const PostCard = ({
   post: Post;
   userId: number | null;
 }) => {
-  const [hover, setHover] = useState<string | null>(null);
   const [hasInterested, setHasInterested] = useState(false);
-
   const navigate = useNavigate();
   const location = useLocation();
 
   const sendInterest = useMutation({
     mutationFn: addInterest,
     onSuccess: (data) => {
-      console.log("Done Creating New User", data);
       toast({
+        variant: "success",
         title: "Interest Sent",
-        description: "The author can now see your interest!",
-        variant: "default",
+        description: "The author can now see your interest",
       });
       setHasInterested(true);
     },
-    onError: (data) => {
-      console.log(data);
+    onError: (err) => {
       toast({
         title: "Failed to send interest",
         description: "Please try again later.",
@@ -48,23 +46,12 @@ export const PostCard = ({
   });
 
   const handlePostClick = () => {
-    navigate(`post/${post.id}`, {
-      state: {
-        background: location,
-      },
-    });
+    navigate(`post/${post.id}`, { state: { background: location } });
   };
 
-  const handleInterest = async (e: React.MouseEvent) => {
+  const handleInterest = (e: React.MouseEvent) => {
     e.stopPropagation();
-    sendInterest.mutate({
-      userId: userId,
-      postId: post.id,
-    });
-  };
-
-  const handleButtonClick = async (e: React.MouseEvent) => {
-    e.stopPropagation();
+    sendInterest.mutate({ userId, postId: post.id });
   };
 
   const isSending = sendInterest.isPending;
@@ -72,94 +59,113 @@ export const PostCard = ({
   return (
     <div
       onClick={handlePostClick}
-      key={post.id}
-      onMouseEnter={() => setHover(post.id)}
-      onMouseLeave={() => setHover(null)}
-      className="border-4 border-slate-900 rounded-xl bg-white
-                 shadow-[8px_8px_0_0_#1e293b]
-                 hover:shadow-[12px_12px_0_0_#1e293b]
-                 transition-all duration-100 p-6"
+      className="group relative bg-[#161616] border border-white/5 rounded-[24px] p-6
+                 hover:border-white/20 hover:bg-[#1c1c1c] transition-all duration-300 cursor-pointer
+                 shadow-xl hover:shadow-2xl overflow-hidden"
     >
-      <div className="flex justify-between items-start">
-        <div>
-          <div className="flex flex-row items-center space-x-3">
-            <div className="inline-flex items-center space-x-1 border border-blue-900 bg-blue-50/50 rounded-full py-1 px-6">
-              <Medal className="text-blue-900" />
-              <div className="text-sm text-blue-900 font-bold">{post.type}</div>
+      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+      <div className="flex flex-col gap-5">
+        {/* Header: Type & Title */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-3">
+            <div className="inline-flex items-center gap-2 w-fit bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+              <Medal size={14} className="text-[#A1A1AA]" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-[#A1A1AA]">
+                {post.type}
+              </span>
             </div>
-            <div className="text-2xl font-bold ml-auto mr-auto">
+            <h3 className="text-xl font-bold tracking-tight text-white group-hover:text-emerald-400 transition-colors">
               {post.title}
-            </div>
-            <div></div>
+            </h3>
           </div>
 
-          <div className="text-gray-600 mt-2 whitespace-pre-line">
-            {post.content}
-          </div>
-
-          <div className="mt-3 flex flex-wrap gap-2">
-            {post.role &&
-              post.role
-                .split(",")
-                .filter((role) => role.trim() !== "")
-                .map((role, idx) => (
-                  <div
-                    key={idx}
-                    className="px-3 py-1 text-xs rounded-full bg-slate-300"
-                  >
-                    {role.trim()}
-                  </div>
-                ))}
-          </div>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); /* share logic */
+            }}
+            className="p-2 text-[#71717A] hover:text-white transition-colors"
+          >
+            <Share2 size={18} />
+          </button>
         </div>
-      </div>
-      <div className="flex items-center justify-between mt-6">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center h-10 w-10 rounded-full bg-indigo-100 text-indigo-700 font-semibold">
-            {post.PostOwner?.username
-              ? post.PostOwner.username.charAt(0).toUpperCase()
-              : "X"}
-          </div>
-          <div>
-            <div className="font-medium">
-              {post.PostOwner?.username || "Unknown User"}
-            </div>
-            <div className="text-xs text-gray-500 mt-1">
-              {new Date(post.createdat).toLocaleDateString()}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-8">
-          <button className="text-sm" onClick={handleButtonClick}>
-            <ThumbsUp className="text-sm" />
-          </button>
-          <button onClick={handleButtonClick}>
-            <MessageSquareText />
-          </button>
-          <button onClick={handleButtonClick}>
-            <Bookmark />
-          </button>
-          {hasInterested ? (
-            <div className="flex items-center gap-2 text-green-600 font-semibold">
-              <CheckCircle2 className="h-5 w-5" />
-              <span>Interested Sent</span>
-            </div>
-          ) : (
-            <button
-              onClick={handleInterest}
-              className="px-4 py-2 bg-slate-700 text-white text-md rounded-lg hover:bg-slate-950 flex items-center justify-center"
-              disabled={isSending}
-            >
-              {isSending ? (
-                <FaSpinner className="animate-spin" />
-              ) : (
-                "Send Request"
-              )}
-            </button>
+        <p className="text-[#A1A1AA] text-sm leading-relaxed font-light line-clamp-3">
+          {post.content}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {post.role?.split(",").map(
+            (role, idx) =>
+              role.trim() && (
+                <span
+                  key={idx}
+                  className="px-3 py-1 text-[11px] font-medium bg-[#0A0A0A] border border-white/5 text-[#71717A] rounded-lg group-hover:border-white/10 group-hover:text-white transition-all"
+                >
+                  {role.trim()}
+                </span>
+              ),
           )}
+        </div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-5 border-t border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#222] to-[#0A0A0A] border border-white/10 flex items-center justify-center font-bold text-sm">
+              {post.PostOwner?.username?.[0].toUpperCase() || "U"}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-medium text-white">
+                {post.PostOwner?.username || "Anonymous"}
+              </span>
+              <div className="flex items-center gap-1.5 text-[10px] text-[#71717A]">
+                <Calendar size={10} />
+                {new Date(post.createdat).toLocaleDateString()}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between sm:justify-end gap-6 sm:gap-4">
+            <div className="flex items-center gap-3 text-[#71717A]">
+              <ActionIcon icon={<ThumbsUp size={18} />} count={0} />
+              <ActionIcon icon={<MessageSquareText size={18} />} count={0} />
+              <ActionIcon icon={<Bookmark size={18} />} />
+            </div>
+            {hasInterested ? (
+              <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 text-emerald-500 rounded-full text-xs font-bold border border-emerald-500/20">
+                <CheckCircle2 size={14} />
+                <span>Requested</span>
+              </div>
+            ) : (
+              <button
+                onClick={handleInterest}
+                disabled={isSending}
+                className="px-6 py-2 bg-white text-black text-xs font-bold rounded-full hover:bg-[#E5E7EB] transition-all active:scale-95 flex items-center gap-2 shadow-lg shadow-white/5"
+              >
+                {isSending ? (
+                  <FaSpinner className="animate-spin" />
+                ) : (
+                  "Send Request"
+                )}
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 };
+
+const ActionIcon = ({
+  icon,
+  count,
+}: {
+  icon: React.ReactNode;
+  count?: number;
+}) => (
+  <button
+    onClick={(e) => e.stopPropagation()}
+    className="flex items-center gap-1.5 hover:text-white transition-colors"
+  >
+    {icon}
+    {count !== undefined && (
+      <span className="text-xs font-medium">{count}</span>
+    )}
+  </button>
+);

@@ -2,11 +2,13 @@ import { apiRequest } from "@/lib/apiRequest";
 import { CreatePostDTO, Post } from "@/types";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-export const createPostUrl = `${BASE_URL}/api/createPost`;
-export const getAllPost = `${BASE_URL}/api/getPost`;
+const postAPIRoutes = {
+  createPost: `${BASE_URL}/post/createPost`,
+  getAllPosts: `${BASE_URL}/post/getPost`,
+};
 
 export const createPost = async (Data: CreatePostDTO) => {
-  return apiRequest(createPostUrl, {
+  return apiRequest(postAPIRoutes.createPost, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -16,12 +18,14 @@ export const createPost = async (Data: CreatePostDTO) => {
   });
 };
 
-export const getPost = async () => {
-  return apiRequest(getAllPost, {
+export const getPost = async (): Promise<Post[]> => {
+  const res = await apiRequest(postAPIRoutes.getAllPosts, {
     method: "GET",
     headers: {
       "content-type": "application/json",
     },
     credentials: "include",
   });
+
+  return res.posts;
 };

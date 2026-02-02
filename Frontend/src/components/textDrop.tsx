@@ -90,10 +90,10 @@ const ParticleTextThree: React.FC = () => {
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
 
     const material = new THREE.PointsMaterial({
-      color: 0x7dd3fc,
+      color: 0xffffff,
       size: PARTICLE_SIZE,
       transparent: true,
-      opacity: 0.9,
+      opacity: 0.8,
     });
 
     const points = new THREE.Points(geometry, material);

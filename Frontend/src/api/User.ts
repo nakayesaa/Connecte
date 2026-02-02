@@ -1,17 +1,19 @@
 import { apiRequest } from "@/lib/apiRequest";
-import { loginDTO, signupDTO } from "@/types";
+import { loginDTO, Post, signupDTO } from "@/types";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
 
-export const urlSignup = `${BASE_URL}/user/signup`;
-export const urlLogin = `${BASE_URL}/user/login`;
-export const urlGetUserData = `${BASE_URL}/user/getUserData`;
-export const urlLogout = `${BASE_URL}/user/logout`;
-export const urlGetData = `${BASE_URL}/user/getData`;
-export const urlUpdate = `${BASE_URL}/user/Update`;
+const userAPIRoutes = {
+  signup: `${BASE_URL}/user/signup`,
+  login: `${BASE_URL}/user/login`,
+  logout: `${BASE_URL}/user/logout`,
+  getUserData: `${BASE_URL}/user/getUserData`,
+  getAllUserData: `${BASE_URL}/user/getData`,
+  updateData: `${BASE_URL}/user/Update`,
+};
 
 export const createUser = async (Data: signupDTO) => {
-  return apiRequest(urlSignup, {
+  return apiRequest(userAPIRoutes.signup, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -20,7 +22,7 @@ export const createUser = async (Data: signupDTO) => {
   });
 };
 export const loginUser = async (Data: loginDTO) => {
-  return apiRequest(urlLogin, {
+  return apiRequest(userAPIRoutes.login, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -29,41 +31,52 @@ export const loginUser = async (Data: loginDTO) => {
   });
 };
 
-export const getUserData = async () => {
-  return apiRequest(urlGetUserData, {
+export const getUsername = async (): Promise<{
+  userId: number;
+  username: string;
+}> => {
+  const res = await apiRequest(userAPIRoutes.getUserData, {
     method: "GET",
-    headers: {
-      "content-type": "application/json",
-    },
   });
+  return res.data;
 };
 
 export const userLogout = async () => {
-  return apiRequest(urlLogout, {
+  const res = await apiRequest(userAPIRoutes.logout, {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
   });
+  return res.data;
 };
 
-export const getData = async () => {
-  return apiRequest(urlGetData, {
+export const getAllUserData = async (): Promise<{
+  username: string;
+  email: string;
+  university: string;
+  major: string;
+  description: string;
+  portfolo: string;
+  Posts: Post[];
+}> => {
+  const res = await apiRequest(userAPIRoutes.getAllUserData, {
     method: "GET",
     headers: {
       "content-type": "application/json",
     },
     credentials: "include",
   });
+  return res.data;
 };
 
-export const update = async (data: {
+export const updateUserData = async (data: {
   university?: string;
   major?: string;
   description?: string;
   portfolo?: string;
 }) => {
-  return apiRequest(urlUpdate, {
+  return apiRequest(userAPIRoutes.updateData, {
     method: "PATCH",
     headers: {
       "content-type": "application/json",

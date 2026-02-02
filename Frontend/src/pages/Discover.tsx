@@ -1,154 +1,157 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Users, Plus, Search, Compass, User, LogOut } from "lucide-react";
 import CreatePost from "./CreatePost";
-import { useNavigate } from "react-router-dom";
-import { getUserData, userLogout } from "@/api/User";
-import { Post } from "@/types";
-import { getPost } from "@/api/Post";
+import { useGetUsername, useLogout } from "@/hooks/useUser";
+import { useGetAllPosts } from "@/hooks/usePosts";
 import { RenderPosts } from "@/components/RenderPosts";
+import CustomInput from "@/components/ui/customInput";
 
 const Discover = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [filter, setFilter] = useState<Post[]>([]);
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState<{ id: number; username: string } | null>(
-    null,
-  );
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [activeTab, setActiveTab] = useState("project");
+
+  const { data: user } = useGetUsername();
+  const { mutateAsync: triggerLogout } = useLogout();
+  const { data: posts } = useGetAllPosts();
 
   const navigate = useNavigate();
-
   const logout = async () => {
-    const logout = await userLogout();
-    if (logout.success) navigate("/auth");
-    else console.log(logout.message);
+    try {
+      const res = await triggerLogout();
+      navigate("/authentication");
+    } catch {
+      console.error("Logout failed:");
+    }
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getUserData();
-        setUser(res.data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    const getAllPost = async () => {
-      try {
-        const res = await getPost();
-        setPosts(res.posts);
-      } catch (err) {
-        console.error("Failed to fetch posts:", err);
-      }
-    };
-    getAllPost();
-  }, []);
-
-  useEffect(() => {
-    let filterPost = posts.filter(
-      (p) =>
-        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.role.toLocaleLowerCase().includes(searchQuery.toLowerCase()),
-    );
-    setFilter(filterPost);
-  }, [searchQuery, posts]);
+  const filteredPosts =
+    posts?.filter((p) => {
+      const query = searchQuery.toLowerCase();
+      return (
+        p.title.toLowerCase().includes(query) ||
+        p.content.toLowerCase().includes(query) ||
+        p.role.toLowerCase().includes(query)
+      );
+    }) ?? [];
 
   return (
-    <div className="min-h-screen bg-gradient-hero">
-      <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-        <div className="container flex h-16 items-center justify-between relative">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-primary">
-              <Users className="h-6 w-6 text-primary-foreground" />
+    <div className="min-h-screen bg-[#0A0A0A] text-white selection:bg-white/20">
+      {/* header */}
+      <header className="sticky top-0 z-50 border-b border-white/5 bg-[#0A0A0A]/80 backdrop-blur-md">
+        <div className="max-w-[1200px] mx-auto flex h-20 items-center justify-between px-6">
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#161616] border border-white/10 group-hover:border-white/30 transition-all">
+              <Users className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col">
-              <div className="text-xl font-bold">Connecte</div>
-              <div className="text-xs text-muted-foreground">
+              <span className="text-lg font-bold tracking-tight">Connecte</span>
+              <span className="text-[10px] uppercase tracking-widest text-[#71717A]">
                 Where Engineers Gather
-              </div>
+              </span>
             </div>
           </Link>
-          <div className="absolute left-1/2 transform -translate-x-1/2 flex gap-4">
+
+          {/* Center */}
+          <nav className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex items-center gap-2 bg-[#161616] border border-white/5 p-1 rounded-2xl">
             <button
               onClick={() => navigate("/discover")}
-              className="flex items-center gap-1 px-4 py-1 rounded text-slate-600 hover:font-bold"
+              className={`flex items-center gap-2 px-6 py-2 rounded-xl text-sm font-medium transition-all ${
+                window.location.pathname === "/discover"
+                  ? "bg-white/5 text-white"
+                  : "text-[#71717A] hover:text-white"
+              }`}
             >
-              <Compass className="h-5 w-5 text-muted-foreground" />
-              Discover
+              <Compass size={16} /> Discover
             </button>
             <button
               onClick={() => navigate("/profile")}
-              className="flex items-center gap-1 text-slate-600 px-4 py-1 rounded hover:font-bold"
+              className="flex items-center gap-2 px-6 py-2 rounded-xl text-[#71717A] hover:text-white transition-colors text-sm font-medium"
             >
-              <User className="h-5 w-5 text-muted-foreground" />
-              Profile
+              <User size={16} /> Profile
             </button>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="font-semibold">
-              {user ? user.username : "Loading..."}
-            </span>
-            <LogOut className="h-5 w-5"></LogOut>
-            <button
-              onClick={logout}
-              className="rounded-md border border-slate-400 text-slate-700 px-3 py-1  hover:font-bold"
-            >
-              Logout
-            </button>
+          </nav>
+          <div className="flex items-center gap-4">
+            {user ? (
+              <div className="flex items-center gap-4">
+                <div className="hidden sm:flex flex-col items-end">
+                  <span className="text-sm font-medium text-white">
+                    {user.username}
+                  </span>
+                  <button
+                    onClick={logout}
+                    className="text-[10px] text-[#71717A] hover:text-red-400 transition-colors flex items-center gap-1"
+                  >
+                    <LogOut size={10} /> Logout
+                  </button>
+                </div>
+                <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-[#161616] to-[#222] border border-white/10" />
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link to="/authentication">
+                  <button className="text-[#A1A1AA] hover:text-white transition-colors text-sm font-medium px-4 py-2">
+                    Login
+                  </button>
+                </Link>
+                <Link to="/authentication">
+                  <button className="bg-[#161616] border border-white/10 text-white px-6 py-2 rounded-full text-sm font-medium hover:border-white/30 transition-all active:scale-95">
+                    Sign In
+                  </button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </header>
-      <main className="container py-8 space-y-8">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      {/* main part */}
+      <main className="max-w-[1200px] mx-auto py-12 px-6 space-y-12">
+        <div className="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-white/5 pb-12">
           <div>
-            <div className="text-3xl font-bold">Discover Projects</div>
-            <div className="text-muted-foreground">Find your perfect team</div>
+            <h1 className="text-5xl font-bold tracking-tighter mb-4">
+              Discover Projects
+            </h1>
+            <p className="text-[#A1A1AA] text-lg max-w-md font-light">
+              Explore real-world challenges and find the perfect team to build
+              with.
+            </p>
           </div>
-          <Button
-            className="gap-2"
-            onClick={() => {
-              setOpen(true);
-            }}
+
+          <button
+            onClick={() => setOpen(true)}
+            className="flex items-center gap-3 px-8 py-3 bg-white text-black rounded-full font-bold hover:bg-[#E5E7EB] transition-all active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)]"
           >
-            <Plus className="h-4 w-4" />
-            Create Post
-          </Button>
-          <CreatePost
-            open={open}
-            close={() => {
-              setOpen(false);
-            }}
-          />
+            <Plus size={18} /> Create Post
+          </button>
         </div>
-        <div className="flex flex-col md:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              className="pl-10 border-4 border-slate-700 focus:border-slate-900"
+
+        <div className="space-y-8">
+          <div className="flex flex-col md:flex-row gap-4 items-center">
+            <CustomInput
               placeholder="Search by keywords, skills, or tags..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            <div className="flex bg-[#161616] p-1 rounded-2xl border border-white/5">
+              {["project", "competition"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={`px-6 py-2 rounded-xl text-sm font-medium capitalize transition-all ${
+                    activeTab === tab
+                      ? "bg-white/10 text-white"
+                      : "text-[#71717A] hover:text-[#A1A1AA]"
+                  }`}
+                >
+                  {tab}s
+                </button>
+              ))}
+            </div>
           </div>
+          <RenderPosts posts={filteredPosts} userId={user ? user.userId : 0} />
         </div>
-        <Tabs>
-          <div className="justify-center flex">
-            <TabsList>
-              <TabsTrigger value="project">Projects</TabsTrigger>
-              <TabsTrigger value="competition">Competitions</TabsTrigger>
-            </TabsList>
-          </div>
-        </Tabs>
-        <RenderPosts posts={posts} userId={user ? user.id : 0} />
       </main>
+      <CreatePost open={open} close={() => setOpen(false)} />
     </div>
   );
 };

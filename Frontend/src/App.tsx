@@ -7,6 +7,7 @@ import SeePost from "./pages/Post";
 import Test from "./pages/Test";
 import { Toaster } from "./components/ui/toaster";
 import Authentication from "./pages/Authentication";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -16,7 +17,6 @@ const App = () => (
         <Route path="/discover" element={<Discover />} />
         <Route path="/" element={<Landing />} />
         <Route path="/Profile" element={<Profile />} />
-        <Route path="/Post" element={<SeePost />} />
         <Route path="/Post" element={<SeePost />} />
         <Route path="/Test" element={<Test />} />
         <Route path="/Authentication" element={<Authentication />} />

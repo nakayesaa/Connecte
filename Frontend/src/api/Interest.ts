@@ -1,12 +1,15 @@
 import { apiRequest } from "@/lib/apiRequest";
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-export const addInterestURL = `${BASE_URL}/AddInterest`;
-export const findDataByUser = `${BASE_URL}/findDataByUser`;
-export const findDataByPost = `${BASE_URL}/findInterestDataByPost`;
+
+const interestAPIRoutes = {
+  addInterest: `${BASE_URL}/AddInterest`,
+  findDataByUser: `${BASE_URL}/findDataByUser`,
+  findDataByPost: `${BASE_URL}/findInterestDataByPost`,
+};
 
 export const addInterest = async (data: { userId: number; postId: string }) => {
-  return apiRequest(addInterestURL, {
+  return apiRequest(interestAPIRoutes.addInterest, {
     method: "POST",
     headers: {
       "content-type": "application/json",
@@ -17,7 +20,7 @@ export const addInterest = async (data: { userId: number; postId: string }) => {
 };
 
 export const getUserDatafromPost = async (postId: string) => {
-  return apiRequest(`${findDataByPost}?postId=${postId}`, {
+  return apiRequest(`${interestAPIRoutes.findDataByPost}?postId=${postId}`, {
     method: "GET",
   });
 };
