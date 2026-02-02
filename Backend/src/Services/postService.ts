@@ -4,7 +4,10 @@ import { createPostDTO } from "../types";
 import { domainToASCII } from "url";
 import { likePost } from "../Repository/likeRepo";
 
-export const postService = async (Data: createPostDTO, userId: number) => {
+export const createPostService = async (
+  Data: createPostDTO,
+  userId: number,
+) => {
   const newPost = await Posts.createPost(
     {
       title: Data.title,

@@ -2,7 +2,7 @@ import { Request, RequestHandler, Response } from "express";
 import {
   addCommentToPost,
   addLikeToPost,
-  postService,
+  createPostService,
 } from "../Services/postService";
 import { AuthUser } from "../middleware/token";
 import prismaClient from "../prismaClient";
@@ -11,11 +11,14 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-export const postController: RequestHandler = async (req, res) => {
+export const createPostController: RequestHandler = async (req, res) => {
   const { title, content, role, type } = req.body;
   const userId = (req as AuthUser).userId;
   try {
-    const post = await postService({ title, content, role, type }, userId);
+    const post = await createPostService(
+      { title, content, role, type },
+      userId,
+    );
     return res.status(201).json({
       success: true,
       message: "Post created",
